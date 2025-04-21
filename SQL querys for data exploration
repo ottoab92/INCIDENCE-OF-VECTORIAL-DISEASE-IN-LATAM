@@ -1,0 +1,47 @@
+---Global health incidence and recovery exploration 
+---Skill used: Data exploration, Temp tables, Aggregate functions
+SELECT *
+FROM 'Global_Health_Statistics_incidence.csv'
+LIMIT 10;
+
+-- Calculate the average incidence rate of each disease by country for the years between 2020 and 2024
+-- Rank diseases within each country by average incidence
+-- This allows us to identify the most prevalent disease in each country
+SELECT Country, Disease_Name, AVG(Incidence_Rate) AS Avg_Incidence
+FROM 'Global_Health_Statistics_incidence.csv'
+WHERE Year BETWEEN 2020 AND 2024
+GROUP BY Country, Disease_Name
+ORDER BY Avg_Incidence DESC
+LIMIT 5;
+
+-- By grouping data by country and healthcare access levels, and calculating the average mortality rate, we can observe whether better access to healthcare is associated with lower mortality. The output is sorted in descending order of healthcare access to highlight trends.
+SELECT Country, Healthcare_Access, AVG(Mortality_Rate) AS Avg_Mortality
+FROM 'Global_Health_Statistics_incidence.csv'
+GROUP BY Country, Healthcare_Access
+ORDER BY Healthcare_Access DESC
+LIMIT 5;
+
+-- This query groups health records by Year and Disease_Name, then calculates the total population affected per group. Ordering the results chronologically enables visualization of how each disease has evolved over time.
+SELECT Year , Disease_Name, SUM(Population_Affected) AS Total_Affected
+FROM 'Global_Health_Statistics_incidence.csv'
+GROUP BY Year, Disease_Name
+ORDER BY Year;
+
+---This query filters the dataset to include only Malaria, Zika, and Dengue cases, then groups the data by year and disease name. It sums the total population affected annually, allowing for time-series analysis.
+SELECT Year , Disease_Name, SUM(Population_Affected) AS Total_Affected
+FROM 'Global_Health_Statistics_incidence.csv'
+	WHERE Disease_Name IN ('Zika', 'Malaria', 'Dengue') 
+GROUP BY Year, Disease_Name
+ORDER BY Year;
+----Used conditional aggregation (CASE WHEN) to isolate each disease, summed their affected population per country, and calculated the total impact.
+SELECT
+    Country,
+    SUM(CASE WHEN Disease_Name = 'Zika' THEN Population_Affected ELSE 0 END) AS Zika_Cases,
+    SUM(CASE WHEN Disease_Name = 'Malaria' THEN Population_Affected ELSE 0 END) AS Malaria_Cases,
+    SUM(CASE WHEN Disease_Name = 'Dengue' THEN Population_Affected ELSE 0 END) AS Dengue_Cases,
+    SUM(Population_Affected) AS Total_Cases
+FROM 'Global_Health_Statistics_incidence.csv'
+WHERE Country IN ('Mexico', 'Brazil', 'Argentina', 'Colombia', 'Chile', 'Peru', 'Venezuela', 'Costa Rica')
+    AND Disease_Name IN ('Zika', 'Malaria', 'Dengue')
+GROUP BY Country
+ORDER BY Total_Cases DESC;
