@@ -1,0 +1,4 @@
+Interactive Tableau Dashboard
+https://public.tableau.com/shared/PMR6352PN?:display_count=n&:origin=viz_share_link
+This dashboard explores the incidence and distribution of Malaria, Dengue, and Zika in Latin America. It highlights temporal trends, age-related patterns, and geographic spread. Built with Tableau using cleaned data processed via SQL.
+(Map: Filterable by disease; Charts: Incidence trends and age breakdown)
